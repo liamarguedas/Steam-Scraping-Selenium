@@ -14,7 +14,6 @@ def GetSteamGames(ToScrape = 10):
     
     driver.get('https://store.steampowered.com/search/?ignore_preferences=1&filter=topsellers')
     
-    time.sleep(3)
     GamesBanner = driver.find_elements(By.CLASS_NAME,"search_result_row.ds_collapse_flag.app_impression_tracked")
     
     for item in GamesBanner:
