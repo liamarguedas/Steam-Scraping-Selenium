@@ -2,7 +2,7 @@ from selenium.common.exceptions import NoSuchElementException, ElementClickInter
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from tkinter import Tk
+from selenium.webdriver.support.ui import Select
 import time
 
 def GetSteamGames(ToScrape = 10):
@@ -20,14 +20,25 @@ def GetSteamGames(ToScrape = 10):
     
     for item in GamesBanner:
         
-        GameDriver = webdriver.Chrome(executable_path = ChromeDriver)
-        GameDriver.get(f"{item.get_attribute('href')}")
-        time.sleep(1)
-        GamesName.append(GameDriver.find_element(By.CLASS_NAME, "apphub_AppName"))
+        try:
+            GameDriver = webdriver.Chrome(executable_path = ChromeDriver)
+            GameDriver.get(f"{item.get_attribute('href')}")
+            time.sleep(1)
+            GamesName.append(GameDriver.find_element(By.CLASS_NAME, "apphub_AppName"))
         
-        # Crear un pass para age verification
-        
-        time.sleep(1)
+        except:
+            
+            AgeRestriction = webdriver.Chrome(executable_path = ChromeDriver)
+            AgeRestriction.get(f"{item.get_attribute('href')}")
+            
+            Select(AgeRestriction.find_element(By.NAME, "ageYear")).select_by_value('2000')
+            SubmitButtom = AgeRestriction.find_element(By.CLASS_NAME, "btnv6_blue_hoverfade.btn_medium")
+            SubmitButtom.click()
+            
+            # Fix Age Restriction
+            
+            #AgeRestriction.append(AgeRestriction.find_element(By.CLASS_NAME, "apphub_AppName"))
+            
     return GamesName
         
 print(GetSteamGames())
