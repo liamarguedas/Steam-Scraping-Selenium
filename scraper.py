@@ -26,6 +26,7 @@ def GetSteamGames(ToScrape = 10, ToWait = 2):
     GameDeveloper = list()
     GamePrice = list()
     DiscountedPrice = list()
+    PEGIRating = list()
     
     
     ChromeDriver = 'chromedriver.exe'
@@ -58,60 +59,63 @@ def GetSteamGames(ToScrape = 10, ToWait = 2):
           
         time.sleep(ToWait)
         
-        
-        # Save game name
+        # Game name
         try: 
             GameName.append(GameDriver.find_element(By.CLASS_NAME, "apphub_AppName").text)   
         except: # In case of an error, introduced an NaN value.
             GameName.append(np.nan)
             
-        # Descripción
+        # Game description
         try: 
             GameDescription.append(GameDriver.find_element(By.CLASS_NAME, "game_description_snippet").text)   
         except:
             GameDescription.append(np.nan)
             
-        # Analisis totales
+        # Total reviews
         try: 
-            GameReviews.append(GameDriver.find_element(By.CLASS_NAME, "nonresponsive_hidden.responsive_reviewdesc"))   
+            GameReviews.append(GameDriver.find_element(By.CLASS_NAME, "user_reviews_summary_bar").text)   
         except:
             GameReviews.append(np.nan)
             
-        # Sentimiento de analisis
+        # Reviews sentiment
         try: 
             ReviewSentiment.append(GameDriver.find_element(By.CLASS_NAME, "game_review_summary").text)   
         except:
             ReviewSentiment.append(np.nan)
              
-        # Fecha de lanzamiento
+        # Release date
         try: 
             ReleaseDate.append(GameDriver.find_element(By.CLASS_NAME, "date").text)   
         except:
             ReleaseDate.append(np.nan)
             
-        # Desenvolvedor
+        # Game Developer
         try: 
             GameDeveloper.append(GameDriver.find_element(By.ID, "developers_list").text)   
         except:
             GameDeveloper.append(np.nan)
         
-        # Precio original
+        # Original Price
         try:
             GamePrice.append(GameDriver.find_element(By.CLASS_NAME, "game_purchase_price.price").text)   
         except:
             GamePrice.append(GameDriver.find_element(By.CLASS_NAME, "discount_original_price").text)   
             
 
-        # Precio descuento
+        # Discounted price
         try: 
             DiscountedPrice.append(GameDriver.find_element(By.CLASS_NAME, "discount_final_price").text)   
         except:
             DiscountedPrice.append('R$ 0,00') 
             
+        # Game Rating (PEGI)
+        try: 
+            PEGIRating.append(GameDriver.find_element(By.CLASS_NAME, "game_rating_icon").get_attribute('src'))   
+        except:
+            PEGIRating.append(np.nan) 
             
-        
-
-        # Classificación del juego (12, 18, L, etc)
+        # FIX PEGI RATING
+            
         # Genero
         
         # Close opened window
@@ -125,6 +129,7 @@ def GetSteamGames(ToScrape = 10, ToWait = 2):
     'ReleaseDate':ReleaseDate,
     'Developer':GameDeveloper,
     'FullPrice':GamePrice,
-    'DiscountedPrice':DiscountedPrice}).to_csv('games.csv')
+    'DiscountedPrice':DiscountedPrice,
+    'PEGI': PEGIRating}).to_csv('games.csv')
         
 GetSteamGames()
