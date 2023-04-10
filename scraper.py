@@ -115,7 +115,7 @@ def GetSteamGames(ToScrape = 10, ToWait = 2):
         # Genero
         
         # Close opened window
-        #item.send_keys(Keys.CONTROL, 'w')
+        GameDriver.quit()
         
     return pd.DataFrame({'Game' : GameName,
     'AgeRestriction': AgeRestriction,
