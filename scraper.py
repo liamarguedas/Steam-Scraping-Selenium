@@ -27,6 +27,8 @@ def GetSteamGames(ToScrape = 10, ToWait = 2):
     GamePrice = list()
     DiscountedPrice = list()
     PEGIRating = list()
+    Metacritic = list()
+    GameType = list()
     
     
     ChromeDriver = 'chromedriver.exe'
@@ -95,12 +97,14 @@ def GetSteamGames(ToScrape = 10, ToWait = 2):
         except:
             GameDeveloper.append(np.nan)
         
+        
+        
+        
         # Original Price
         try:
-            GamePrice.append(GameDriver.find_element(By.CLASS_NAME, "game_purchase_price.price").text)   
-        except:
             GamePrice.append(GameDriver.find_element(By.CLASS_NAME, "discount_original_price").text)   
-            
+        except:
+            GamePrice.append(GameDriver.find_element(By.CLASS_NAME, "game_purchase_price.price").text)   
 
         # Discounted price
         try: 
@@ -108,15 +112,37 @@ def GetSteamGames(ToScrape = 10, ToWait = 2):
         except:
             DiscountedPrice.append('R$ 0,00') 
             
+            
+            
+            
         # Game Rating (PEGI)
         try: 
-            PEGIRating.append(GameDriver.find_element(By.CLASS_NAME, "game_rating_icon").get_attribute('src'))   
+            PEGIRating.append(GameDriver.find_element(By.XPATH, "//div[@class='game_rating_icon']/img").get_attribute("src"))  
         except:
             PEGIRating.append(np.nan) 
             
-        # FIX PEGI RATING
+        # MetacriticScore
+        try: 
+            Metacritic.append(GameDriver.find_element(By.CLASS_NAME, "score").text)  
+        except:
+            Metacritic.append(np.nan) 
             
         # Genero
+        try: 
+            GameType.append(GameDriver.find_element(By.XPATH, "//div[@id='genresAndManufacturer']//span").text)  
+        except:
+            GameType.append(np.nan)  
+        
+        # Last update
+        
+        # Compat with Controller
+        
+        # In-app purchases
+        
+        # Valvi anti-cheat
+        
+        # Valve workshop
+        
         
         # Close opened window
         GameDriver.quit()
@@ -130,6 +156,8 @@ def GetSteamGames(ToScrape = 10, ToWait = 2):
     'Developer':GameDeveloper,
     'FullPrice':GamePrice,
     'DiscountedPrice':DiscountedPrice,
-    'PEGI': PEGIRating}).to_csv('games.csv')
+    'PEGI': PEGIRating,
+    'MetacriticScore': Metacritic,
+    'Type':GameType}).to_csv('games.csv')
         
 GetSteamGames()
