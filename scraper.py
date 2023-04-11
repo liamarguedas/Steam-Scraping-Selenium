@@ -30,6 +30,8 @@ def GetSteamGames(ToScrape = 10, ToWait = 2):
     Metacritic = list()
     GameType = list()
     LastUpdate = list()
+    GamesLanguages = list()
+    GamesFeatures = list()
     
     
     ChromeDriver = 'chromedriver.exe'
@@ -139,10 +141,20 @@ def GetSteamGames(ToScrape = 10, ToWait = 2):
         except:
             LastUpdate.append(np.nan) 
         
-        # Compat with Controller
-        
+        # Game Available Languages
+        try: 
+            GamesLanguages.append(GameDriver.find_element(By.CLASS_NAME, "all_languages").text)  
+        except:
+            GamesLanguages.append(np.nan) 
+            
         # In-app purchases
-        
+        try: 
+            GamesFeatures.append(GameDriver.find_elements(By.XPATH, "//div[@class='game_area_features_list_ctn']//div[@class='label']").text)  
+        except:
+            GamesFeatures.append(np.nan) 
+            
+        print(GamesFeatures)
+        break
         # Valvi anti-cheat
         
         # Valve workshop
