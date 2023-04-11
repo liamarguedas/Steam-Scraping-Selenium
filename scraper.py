@@ -29,6 +29,7 @@ def GetSteamGames(ToScrape = 10, ToWait = 2):
     PEGIRating = list()
     Metacritic = list()
     GameType = list()
+    LastUpdate = list()
     
     
     ChromeDriver = 'chromedriver.exe'
@@ -97,23 +98,22 @@ def GetSteamGames(ToScrape = 10, ToWait = 2):
         except:
             GameDeveloper.append(np.nan)
         
-        
-        
-        
         # Original Price
         try:
-            GamePrice.append(GameDriver.find_element(By.CLASS_NAME, "discount_original_price").text)   
+            GamePrice.append(GameDriver.find_element(By.XPATH, "//div[@class='game_purchase_action_bg']/div[@class='game_purchase_price price']").text)   
+
         except:
-            GamePrice.append(GameDriver.find_element(By.CLASS_NAME, "game_purchase_price.price").text)   
+            GamePrice.append(GameDriver.find_element(By.XPATH, "//div[@class='discount_prices']/div[@class='discount_original_price']").text)
 
         # Discounted price
-        try: 
-            DiscountedPrice.append(GameDriver.find_element(By.CLASS_NAME, "discount_final_price").text)   
+        try:
+            if GamePrice[-1] in ['Gratuito para jogar', 'Gratuito p/ Jogar']:
+                
+                raise ValueError('Except to execute')
+            else: 
+                DiscountedPrice.append(GameDriver.find_element(By.XPATH, "//div[@class='discount_block game_purchase_discount']//div[@class='discount_final_price']").text)   
         except:
             DiscountedPrice.append('R$ 0,00') 
-            
-            
-            
             
         # Game Rating (PEGI)
         try: 
@@ -134,6 +134,10 @@ def GetSteamGames(ToScrape = 10, ToWait = 2):
             GameType.append(np.nan)  
         
         # Last update
+        try: 
+            LastUpdate.append(GameDriver.find_element(By.CLASS_NAME, "partnereventwebrowembed_LatestUpdateButton_3F6YM.Focusable").text)  
+        except:
+            LastUpdate.append(np.nan) 
         
         # Compat with Controller
         
@@ -158,6 +162,7 @@ def GetSteamGames(ToScrape = 10, ToWait = 2):
     'DiscountedPrice':DiscountedPrice,
     'PEGI': PEGIRating,
     'MetacriticScore': Metacritic,
-    'Type':GameType}).to_csv('games.csv')
+    'Type':GameType,
+    'LastUpdate': LastUpdate}).to_csv('games.csv')
         
 GetSteamGames()
