@@ -58,6 +58,10 @@ def GetSteamGames(ToScrape = 10, ToWait = 0.5, verbose = True, Scroll = 5):
     # Find all listed games
     GamesBanner = driver.find_elements(By.CLASS_NAME, "search_result_row.ds_collapse_flag.app_impression_tracked")
     
+    if len(GamesBanner) < ToScrape:
+        
+        raise ValueError(f"Games ToScrape ({ToScrape}) is higher than games found ({len(GamesBanner)}), try raising Scroll parameter")
+        
     if verbose:
         print(f"Total Found games: {len(GamesBanner)}")
         print(f"Scraping: {ToScrape}")
