@@ -44,11 +44,11 @@ def GetSteamGames(ToScrape = 10, ToWait = 0.5, verbose = True, Scroll = 5):
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options = options)
     
     # Getting top sellers games
-    driver.get('https://store.steampowered.com/search/?ignore_preferences=1&filter=topsellers')
+    driver.get('https://store.steampowered.com/search/?filter=topsellers&ndl=1&ignore_preferences=1')
     
     # Scrolling "Scroll" times to get games
     for scroll in range(1, Scroll + 1):
-        driver.execute_script(f"window.scrollTo(0, {2000 * scroll})")
+        driver.execute_script(f"window.scrollTo(0, {2500 * scroll})")
         time.sleep(1) 
     
     # Scroll back to the first game
@@ -131,9 +131,11 @@ def GetSteamGames(ToScrape = 10, ToWait = 0.5, verbose = True, Scroll = 5):
             # Original Price
             try:
                 GamePrice.append(GameDriver.find_element(By.XPATH, "//div[@class='game_purchase_action_bg']/div[@class='game_purchase_price price']").text)   
-
             except:
-                GamePrice.append(GameDriver.find_element(By.XPATH, "//div[@class='discount_prices']/div[@class='discount_original_price']").text)
+                try:
+                    GamePrice.append(GameDriver.find_element(By.XPATH, "//div[@class='discount_prices']/div[@class='discount_original_price']").text)
+                except:
+                    GamePrice.append(np.nan)
 
             # Discounted price
             try:
