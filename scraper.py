@@ -131,10 +131,12 @@ def GetSteamGames(ToScrape = 10, ToWait = 0.5, verbose = True, Scroll = 5):
             # Original Price
             try:
                 GamePrice.append(GameDriver.find_element(By.XPATH, "//div[@class='game_purchase_action_bg']/div[@class='game_purchase_price price']").text)   
-
             except:
-                GamePrice.append(GameDriver.find_element(By.XPATH, "//div[@class='discount_prices']/div[@class='discount_original_price']").text)
-
+                try:
+                    GamePrice.append(GameDriver.find_element(By.XPATH, "//div[@class='discount_prices']/div[@class='discount_original_price']").text)
+                except:
+                    GamePrice.append(np.nan)
+                    
             # Discounted price
             try:
                 if GamePrice[-1] in ['Gratuito para jogar', 'Gratuito p/ Jogar']:
